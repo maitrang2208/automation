@@ -4,19 +4,24 @@
 import { test } from "../fixtures/base-fixtures";
 import { expect } from "playwright/test";
 import { randomName } from "../utils/helper";
-import { before } from "node:test";
+import { LoginPage } from '../pages/LoginPage';
+
 
 
 test.describe("Create Nationality Tests", () => {
  
- test.beforeAll(async ({ loginPage, administrationPage }) => {
-   await loginPage.navigateToLoginPage();
-   await loginPage.login("Admin", "admin123");
-   await expect(loginPage.page).toHaveTitle("OrangeHRM");
+//  test.beforeAll(async ({ loginPage, administrationPage }) => {
+//    await loginPage.navigateToLoginPage();
+//    await loginPage.login("Admin", "admin123");
+//    await expect(loginPage.page).toHaveTitle("OrangeHRM");
 
- });
+//  });
 
- test.beforeEach(async ({ administrationPage }) => {
+ test.beforeEach(async ({ loginPage,administrationPage }) => {
+
+  await loginPage.navigateToLoginPage();
+  await loginPage.login("Admin", "admin123");
+  await expect(loginPage.page).toHaveTitle("OrangeHRM");
   await administrationPage.navigateToSection("Admin");   //Go to Administration section
   await expect(administrationPage.header.getByText("Admin")).toBeVisible();
 
@@ -77,6 +82,15 @@ test("3/Login and create nationality and edit natoionality", async ({loginPage,a
   await expect(administrationPage.headerEditNationality).toBeVisible({ timeout: 15000 });
   await administrationPage.txtNationalityName.waitFor({ state: 'visible', timeout: 15000 });
   await expect(administrationPage.txtNationalityName).toHaveValue(newNationName);
+  const updatedNationName = `${newNationName} - Updated`;
+  await administrationPage.txtNationalityName.fill(updatedNationName);
+  await administrationPage.saveButton.click();
+  // Verify
+  await administrationPage.tableNationality.waitFor({ state: 'visible', timeout: 15000 });
+  await expect(administrationPage.headerNationalityName).toBeVisible({ timeout: 15000 });
+  await administrationPage.checkNationalityAdded(updatedNationName);
+  
+ 
 //edit nationality
 
 });
