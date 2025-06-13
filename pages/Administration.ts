@@ -1,0 +1,105 @@
+import { Page, Locator, expect, test as baseTest } from "@playwright/test";
+import { randomName } from "../utils/helper";
+import { get } from "http";
+import { time } from "console";
+
+export class AdministrationPage {
+  readonly Sidepanel: Locator;
+  readonly header: Locator;
+  readonly topBar: Locator;
+  readonly menuTopBar: Locator;
+  readonly addbtn: Locator;
+  readonly h6Text: Locator;
+  readonly saveButton: Locator;
+  readonly txtNationalityName: Locator;
+  readonly headerNationalityName: Locator;
+  readonly headerUserManagement: Locator;
+  readonly pageNumber: Locator;
+  readonly pagination: Locator;
+  readonly nationalityNameList: Locator;
+  readonly tableNationality: Locator;
+  readonly delbtn: (name: string) => Locator;
+  readonly delDialog: Locator;
+  readonly delText: Locator;
+  readonly btnDelete: Locator;
+  readonly editbtn: (name: string) => Locator;
+  readonly headerEditNationality: Locator;
+
+  constructor(page: Page) {
+    this.Sidepanel = page.locator(".oxd-main-menu-item-wrapper span");
+    this.header = page.locator(".oxd-topbar-header-breadcrumb-module");
+    this.topBar = page.locator(".oxd-topbar-body-nav-tab-item");
+    this.menuTopBar = page.locator(".oxd-dropdown-menu").getByRole("menuitem");
+    this.addbtn = page.getByRole("button", { name: "Add" });
+
+    this.h6Text = page.locator(".orangehrm-main-title");
+    this.saveButton = page.locator('button[type="submit"]');
+    this.txtNationalityName = page.locator(".oxd-input-group").getByRole("textbox");
+    this.headerNationalityName = page.getByRole('heading', { name: 'Nationalities' })
+
+    this.headerUserManagement = page.locator(".oxd-table-filter-header-title");
+
+    //Nationalities
+    this.pageNumber = page.locator(".oxd-pagination-page-item--page");
+    this.pagination = page.locator(".oxd-pagination__ul");
+    this.nationalityNameList = page.locator(".oxd-padding-cell:nth-child(2)");
+    this.tableNationality = page.locator(".oxd-table-body");
+    this.nationalityNameList = page.locator(".oxd-padding-cell:nth-child(2)");
+    this.delbtn = (name: string) => page.getByRole('row', { name: name }).getByRole('button').locator('.bi-trash');
+    this.delDialog = page.locator(".orangehrm-dialog-popup");
+    this.delText = page.locator(".orangehrm-text-center-align");
+    this.btnDelete = page.getByRole("button", { name: " Yes, Delete " });
+    this.editbtn = (name: string) => page.getByRole('row', { name: name }).getByRole('button').locator('.bi-pencil-fill');
+    this.headerEditNationality = page.getByRole('heading', { name: 'Edit Nationality' });
+  }
+
+  async navigateToSection(setionName: string) {
+    await this.Sidepanel.getByText(setionName).click();
+    await expect(this.Sidepanel.getByText(setionName)).toBeVisible();
+  }
+
+  async clickTopBarItem(itemName: string, menuName?: string) {
+    await this.topBar.getByText(itemName).click();
+
+    if (menuName) {
+      await this.menuTopBar.getByText(menuName).click();
+    }
+
+    await expect(this.topBar.getByText(itemName)).toBeVisible();
+  }
+
+  // Calculate total pages in a paginated list
+  async getTotalPages() {
+    if ((await this.pagination.isVisible()) === true) {
+      const totalPageNumber = await this.pageNumber.last().textContent();
+      return Number(totalPageNumber);
+    }
+    return 1; // Default to 1 if no pagination or only one page
+  }
+
+  async checkNationalityAdded(nameNation: string) {
+    const lengthPage = await this.getTotalPages();
+
+    for (let i = 0; i < lengthPage; i++) {
+
+      await this.tableNationality.waitFor({ state: "visible", timeout: 10000 });
+
+      console.log(`Checking page ${i + 1}`);
+      const element = this.nationalityNameList.filter({ hasText: nameNation });
+      //const element = this.nationalityNameList.toContainText(nameNation);
+
+      if (await element.isVisible()) {
+        console.log(`Found ${nameNation} on page ${i + 1}`);
+        return true; // Exit the loop if found
+      } else if (i < lengthPage - 1) {
+        await this.pagination
+          .getByRole("button", { name: String(i + 2) })
+          .click();
+      }
+    }
+    console.log('nation is not found')
+    return false;
+     // If not found after checking all pages
+  }
+
+}
