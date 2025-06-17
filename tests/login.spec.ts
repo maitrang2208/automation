@@ -41,8 +41,6 @@ import { expect } from "playwright/test";
 import { randomName } from "../utils/helper";
 
 
-
-
 test("1/ Login and create nationality", async ({loginPage}) => {
   await loginPage.navigateToLoginPage();
   await loginPage.login("Admin", "admin123");

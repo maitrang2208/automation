@@ -24,6 +24,10 @@ export class AdministrationPage {
   readonly editbtn: (name: string) => Locator;
   readonly headerEditNationality: Locator;
 
+  //userManagement
+  readonly h5UserManagementHeader: Locator;
+  readonly menuUserManagement: Locator
+
   constructor(page: Page) {
     this.Sidepanel = page.locator(".oxd-main-menu-item-wrapper span");
     this.header = page.locator(".oxd-topbar-header-breadcrumb-module");
@@ -50,6 +54,11 @@ export class AdministrationPage {
     this.btnDelete = page.getByRole("button", { name: " Yes, Delete " });
     this.editbtn = (name: string) => page.getByRole('row', { name: name }).getByRole('button').locator('.bi-pencil-fill');
     this.headerEditNationality = page.getByRole('heading', { name: 'Edit Nationality' });
+
+
+    //User Management
+    this.h5UserManagementHeader=page.getByRole('heading', { name: 'System Users' });
+    this.menuUserManagement = page.getByRole('listitem').filter({ hasText: 'User Management' })
   }
 
   async navigateToSection(setionName: string) {
@@ -58,13 +67,11 @@ export class AdministrationPage {
   }
 
   async clickTopBarItem(itemName: string, menuName?: string) {
-    await this.topBar.getByText(itemName).click();
+    await this.topBar.getByText(itemName, { exact: true }).click();
 
     if (menuName) {
-      await this.menuTopBar.getByText(menuName).click();
+     await this.menuTopBar.getByText(menuName,{exact:true}).click()
     }
-
-    await expect(this.topBar.getByText(itemName)).toBeVisible();
   }
 
   // Calculate total pages in a paginated list

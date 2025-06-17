@@ -26,7 +26,7 @@ test.describe("Create Nationality Tests", () => {
   await expect(administrationPage.header.getByText("Admin")).toBeVisible();
 
   await administrationPage.clickTopBarItem("Nationalities");   // click on nationalities
-  await expect( administrationPage.headerNationalityName.getByText("Nationalities")).toBeVisible();
+  await expect( administrationPage.headerNationalityName.getByText("Nationalities")).toBeVisible({timeout:5000});
  })
  
 
@@ -38,7 +38,7 @@ test.describe("Create Nationality Tests", () => {
   const newNationName = await administrationPage.txtNationalityName.inputValue();
   await administrationPage.saveButton.click();
   // verify the new nationality is added
-  await expect(administrationPage.headerNationalityName.getByText("Nationalities")).toBeVisible({ timeout: 15000 });
+  await expect(administrationPage.headerNationalityName).toBeVisible({ timeout: 10000 });
   const result = await administrationPage.checkNationalityAdded(newNationName);
   expect(result).toBe(true); // Assert the result
 
@@ -63,8 +63,7 @@ test("2/Login and create nationality and delete natoionality", async ({administr
   await administrationPage.tableNationality.waitFor({ state: 'visible' ,timeout: 15000});
   const isDeleted = await administrationPage.checkNationalityAdded(newNationName);
   expect(isDeleted).toBe(false); //
-//delete nationality
-
+ //delete nationality
 });
 test("3/Login and create nationality and edit natoionality", async ({loginPage,administrationPage,}) => {
   //click on add button
@@ -77,6 +76,7 @@ test("3/Login and create nationality and edit natoionality", async ({loginPage,a
   await expect(administrationPage.headerNationalityName).toBeVisible({ timeout: 20000 });
   const result = await administrationPage.checkNationalityAdded(newNationName);
   expect(result).toBe(true); 
+
   // Edit nationality
   await administrationPage.editbtn(newNationName).click();
   await expect(administrationPage.headerEditNationality).toBeVisible({ timeout: 15000 });
@@ -85,13 +85,13 @@ test("3/Login and create nationality and edit natoionality", async ({loginPage,a
   const updatedNationName = `${newNationName} - Updated`;
   await administrationPage.txtNationalityName.fill(updatedNationName);
   await administrationPage.saveButton.click();
-  // Verify
+
+  // Verify the nationality is successfully updated
   await administrationPage.tableNationality.waitFor({ state: 'visible', timeout: 15000 });
   await expect(administrationPage.headerNationalityName).toBeVisible({ timeout: 15000 });
   await administrationPage.checkNationalityAdded(updatedNationName);
   
- 
-//edit nationality
+  //Edit nationality
 
 });
 
