@@ -7,6 +7,8 @@ export const test = baseTest.extend<{
     loginPage: ReturnType<typeof PageFactory.createLoginPage>;
     administrationPage: ReturnType<typeof PageFactory.createAdministrationPage>;
   
+
+    
 }>({
     loginPage: async ({ page }, use) =>
     {

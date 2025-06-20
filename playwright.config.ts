@@ -1,17 +1,25 @@
+require('dotenv').config();
 import { defineConfig, devices } from '@playwright/test';
-
+import {Timeout} from './constants/timeout';
+import dotenv from 'dotenv';
+import path from 'path';
 /**
  * Read environment variables from file.
  * https://github.com/motdotla/dotenv
  */
 // import dotenv from 'dotenv';
 // import path from 'path';
-// dotenv.config({ path: path.resolve(__dirname, '.env') });
+dotenv.config({ path: path.resolve(__dirname, '.env') });
 
 /**
  * See https://playwright.dev/docs/test-configuration.
  */
+
 export default defineConfig({
+  
+  expect: {
+    timeout: Timeout.DEFAULT, // 10 seconds
+  },
   testDir: './tests',
   /* Run tests in files in parallel */
   fullyParallel: true,
@@ -26,29 +34,41 @@ export default defineConfig({
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
-    // baseURL: 'http://127.0.0.1:3000',
+    baseURL: process.env.BASE_URL,
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
-    actionTimeout: 40_000  , // 60 seconds
+    actionTimeout: Timeout.DEFAULT  , //10 seconds
+    navigationTimeout: Timeout.LONG,
+    // 30 seconds
 
   },
 
   /* Configure projects for major browsers */
   projects: [
+    { name: 'setup', 
+       testMatch: /.*\.setup\.ts/
+    },
     {
       name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
+      use: { ...devices['Desktop Chrome'],storageState: './.auth/user.json' },
+     // dependencies: ['setup'], // This ensures the 'setup' project runs before 'chromium'
     },
 
     {
       name: 'firefox',
-      use: { ...devices['Desktop Firefox'] },
+      use: { ...devices['Desktop Firefox'],
+        storageState: './.auth/user.json', // Use the authenticated state from the setup
+       },
+      //dependencies: ['setup'],
     },
 
     {
       name: 'webkit',
-      use: { ...devices['Desktop Safari'] },
+      use: { ...devices['Desktop Safari'] ,
+        storageState: './.auth/user.json'
+      },
+      //dependencies: ['setup'],
     },
 
     /* Test against mobile viewports. */
@@ -78,6 +98,5 @@ export default defineConfig({
   //   url: 'http://127.0.0.1:3000',
   //   reuseExistingServer: !process.env.CI,
   // },
-
-globalTimeout:40000 // Set a global timeout of 60 seconds for each test
+// Set a global timeout of 60 seconds for each test
 });

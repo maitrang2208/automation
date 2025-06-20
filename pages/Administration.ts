@@ -8,7 +8,7 @@ export class AdministrationPage {
   readonly topBar: Locator;
   readonly menuTopBar: Locator;
   readonly addbtn: Locator;
-  readonly h6Text: Locator;
+  readonly orangehrmMainTitle: Locator;
   readonly saveButton: Locator;
   readonly txtNationalityName: Locator;
   readonly headerNationalityName: Locator;
@@ -35,7 +35,7 @@ export class AdministrationPage {
     this.menuTopBar = page.locator(".oxd-dropdown-menu").getByRole("menuitem");
     this.addbtn = page.getByRole("button", { name: "Add" });
 
-    this.h6Text = page.locator(".orangehrm-main-title");
+    this.orangehrmMainTitle = page.locator(".orangehrm-main-title");
     this.saveButton = page.locator('button[type="submit"]');
     this.txtNationalityName = page.locator(".oxd-input-group").getByRole("textbox");
     this.headerNationalityName = page.getByRole('heading', { name: 'Nationalities' })
@@ -47,7 +47,6 @@ export class AdministrationPage {
     this.pagination = page.locator(".oxd-pagination__ul");
     this.nationalityNameList = page.locator(".oxd-padding-cell:nth-child(2)");
     this.tableNationality = page.locator(".oxd-table-body");
-    this.nationalityNameList = page.locator(".oxd-padding-cell:nth-child(2)");
     this.delbtn = (name: string) => page.getByRole('row', { name: name }).getByRole('button').locator('.bi-trash');
     this.delDialog = page.locator(".orangehrm-dialog-popup");
     this.delText = page.locator(".orangehrm-text-center-align");
@@ -62,7 +61,7 @@ export class AdministrationPage {
   }
 
   async navigateToSection(setionName: string) {
-    await this.Sidepanel.getByText(setionName).click();
+    await this.Sidepanel.getByText(setionName).click({timeout: 10000});
     await expect(this.Sidepanel.getByText(setionName)).toBeVisible();
   }
 

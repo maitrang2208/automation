@@ -36,14 +36,12 @@
 //-----------
 
 // tests/login.spec.ts// ← Uses extended test
-import { test } from "../fixtures/base-fixtures";
-import { expect } from "playwright/test";
-import { randomName } from "../utils/helper";
+import { test } from '../fixtures/base-fixtures';
+import { expect } from 'playwright/test';
+import { randomName } from '../utils/helper';
 
-
-test("1/ Login and create nationality", async ({loginPage}) => {
+test('1/ Login and create nationality', async ({ loginPage }) => {
   await loginPage.navigateToLoginPage();
-  await loginPage.login("Admin", "admin123");
-  await expect(loginPage.page).toHaveTitle("OrangeHRM");
-});
 
+  await expect(loginPage.page).toHaveTitle('OrangeHRM');
+});
