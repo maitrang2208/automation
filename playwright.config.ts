@@ -17,12 +17,13 @@ dotenv.config({ path: path.resolve(__dirname, '.env') });
 
 export default defineConfig({
   
+  
   expect: {
     timeout: Timeout.DEFAULT, // 10 seconds
   },
   testDir: './tests',
   /* Run tests in files in parallel */
-  fullyParallel: true,
+  fullyParallel: false,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
   /* Retry on CI only */
@@ -47,27 +48,30 @@ export default defineConfig({
   /* Configure projects for major browsers */
   projects: [
     { name: 'setup', 
-       testMatch: /.*\.setup\.ts/
+      testMatch: /.*\.setup\.ts/
     },
     {
       name: 'chromium',
-      use: { ...devices['Desktop Chrome'],storageState: './.auth/user.json' },
+      use: { ...devices['Desktop Chrome'],
+      headless: false
+       // storageState: './.auth/user.json'
+       },
      // dependencies: ['setup'], // This ensures the 'setup' project runs before 'chromium'
     },
 
     {
-      name: 'firefox',
-      use: { ...devices['Desktop Firefox'],
-        storageState: './.auth/user.json', // Use the authenticated state from the setup
-       },
+      // name: 'firefox',
+      // use: { ...devices['Desktop Firefox'],
+      //   //storageState: './.auth/user.json', // Use the authenticated state from the setup
+      //  },
       //dependencies: ['setup'],
     },
 
     {
-      name: 'webkit',
-      use: { ...devices['Desktop Safari'] ,
-        storageState: './.auth/user.json'
-      },
+      // name: 'webkit',
+      // use: { ...devices['Desktop Safari'] ,
+      //  // storageState: './.auth/user.json'
+      // },
       //dependencies: ['setup'],
     },
 

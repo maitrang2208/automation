@@ -8,6 +8,7 @@ const authFile = './.auth/user.json';
 
 setup('authenticate', async ({ page }) => {
   const loginPage = PageFactory.createLoginPage(page);
+  await page.goto(process.env.BASE_URL)
   // Perform authentication steps. Replace these actions with your own.
   await loginPage.usernameInput.fill(process.env.TEST_USERNAME);
   await loginPage.passwordInput.fill(process.env.TEST_PASSWORD);
@@ -16,7 +17,7 @@ setup('authenticate', async ({ page }) => {
   //
   // Sometimes login flow sets cookies in the process of several redirects.
   // Wait for the final URL to ensure that the cookies are actually set.
-  await page.waitForURL(process.env.BASE_URL);
+  await page.waitForURL('https://opensource-demo.orangehrmlive.com/web/index.php/dashboard/index');
   await expect(page).toHaveTitle('OrangeHRM')
    
   // End of authentication steps.

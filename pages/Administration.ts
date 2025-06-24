@@ -60,8 +60,8 @@ export class AdministrationPage {
     this.menuUserManagement = page.getByRole('listitem').filter({ hasText: 'User Management' })
   }
 
-  async navigateToSection(setionName: string) {
-    await this.Sidepanel.getByText(setionName).click({timeout: 10000});
+  async navigateToMenu(setionName: string) {
+    await this.Sidepanel.getByText(setionName).click();
     await expect(this.Sidepanel.getByText(setionName)).toBeVisible();
   }
 
@@ -87,7 +87,7 @@ export class AdministrationPage {
 
     for (let i = 0; i < lengthPage; i++) {
 
-      await this.tableNationality.waitFor({ state: "visible", timeout: 10000 });
+      await this.tableNationality.waitFor({ state: "visible" });
 
       console.log(`Checking page ${i + 1}`);
       const element = this.nationalityNameList.filter({ hasText: nameNation });
