@@ -1,6 +1,6 @@
 import { Page, Locator, expect, test as baseTest } from "@playwright/test";
 import { randomName } from "../utils/helper";
-
+import { faker } from '@faker-js/faker';
 
 export class AdministrationPage {
   readonly Sidepanel: Locator;
@@ -26,7 +26,22 @@ export class AdministrationPage {
 
   //userManagement
   readonly h5UserManagementHeader: Locator;
-  readonly menuUserManagement: Locator
+  readonly menuUserManagement: Locator;
+  readonly drpUserRole: Locator;
+  readonly optAdmin: Locator;
+  readonly optESS: Locator;
+  readonly drpStatus: Locator;
+  readonly optEnable: Locator;
+  readonly optDisable: Locator;
+  readonly txtEmployeeName: Locator;
+  readonly optEmployeeName: Locator;
+  readonly txtUserName: Locator;
+  readonly userName: string
+  readonly txtPassword: Locator;
+  readonly txtConfirmPassword: Locator;
+
+
+
 
   constructor(page: Page) {
     this.Sidepanel = page.locator(".oxd-main-menu-item-wrapper span");
@@ -37,27 +52,41 @@ export class AdministrationPage {
 
     this.orangehrmMainTitle = page.locator(".orangehrm-main-title");
     this.saveButton = page.locator('button[type="submit"]');
+
+    //Nationalities
     this.txtNationalityName = page.locator(".oxd-input-group").getByRole("textbox");
-    this.headerNationalityName = page.getByRole('heading', { name: 'Nationalities' })
+    this.headerNationalityName = page.getByRole("heading", { name: "Nationalities" });
 
     this.headerUserManagement = page.locator(".oxd-table-filter-header-title");
 
-    //Nationalities
     this.pageNumber = page.locator(".oxd-pagination-page-item--page");
     this.pagination = page.locator(".oxd-pagination__ul");
     this.nationalityNameList = page.locator(".oxd-padding-cell:nth-child(2)");
     this.tableNationality = page.locator(".oxd-table-body");
-    this.delbtn = (name: string) => page.getByRole('row', { name: name }).getByRole('button').locator('.bi-trash');
+    this.delbtn = (name: string) => page.getByRole("row", { name: name }).getByRole("button").locator(".bi-trash");
     this.delDialog = page.locator(".orangehrm-dialog-popup");
     this.delText = page.locator(".orangehrm-text-center-align");
     this.btnDelete = page.getByRole("button", { name: " Yes, Delete " });
-    this.editbtn = (name: string) => page.getByRole('row', { name: name }).getByRole('button').locator('.bi-pencil-fill');
-    this.headerEditNationality = page.getByRole('heading', { name: 'Edit Nationality' });
-
+    this.editbtn = (name: string) => page.getByRole("row", { name: name }).getByRole("button").locator(".bi-pencil-fill");
+    this.headerEditNationality = page.getByRole("heading", { name: "Edit Nationality" });
 
     //User Management
-    this.h5UserManagementHeader=page.getByRole('heading', { name: 'System Users' });
-    this.menuUserManagement = page.getByRole('listitem').filter({ hasText: 'User Management' })
+    this.h5UserManagementHeader = page.getByRole("heading", { name: "System Users" });
+    this.menuUserManagement = page.getByRole("listitem").filter({ hasText: "User Management" });
+    this.drpUserRole = page.locator(".oxd-input-group").filter({ hasText: "User Role" }).locator(".oxd-select-text-input");
+    this.optAdmin = page.getByRole("option", { name: "Admin" });
+    this.optESS = page.getByRole("option", { name: "ESS" });
+
+    this.drpStatus = page.locator(".oxd-input-group").filter({ hasText: "Status" }).locator(".oxd-select-text-input");
+    this.optEnable = page.getByRole("option", { name: "Enabled" });
+    this.optDisable = page.getByRole("option", { name: "Disabled" });
+    this.txtEmployeeName = page.locator(".oxd-input-group").filter({ hasText: "Employee Name" }).getByRole("textbox");
+    this.optEmployeeName = page.getByRole("option", { name: "Yousef Omer Kmail" });
+    this.txtUserName= page.locator(".oxd-input-group").filter({ hasText: "Username" }).locator(".oxd-input");
+    this.userName = faker.internet.userName();
+    this.txtPassword= page.locator('.oxd-input-group').filter({ hasText: 'Password' }).nth(0).locator('.oxd-input')
+    this.txtConfirmPassword= page.locator(".oxd-input-group").filter({ hasText: "Confirm Password" }).locator(".oxd-input");
+
   }
 
   async navigateToMenu(setionName: string) {
@@ -69,7 +98,7 @@ export class AdministrationPage {
     await this.topBar.getByText(itemName, { exact: true }).click();
 
     if (menuName) {
-     await this.menuTopBar.getByText(menuName,{exact:true}).click()
+      await this.menuTopBar.getByText(menuName, { exact: true }).click();
     }
   }
 
@@ -86,7 +115,6 @@ export class AdministrationPage {
     const lengthPage = await this.getTotalPages();
 
     for (let i = 0; i < lengthPage; i++) {
-
       await this.tableNationality.waitFor({ state: "visible" });
 
       console.log(`Checking page ${i + 1}`);
@@ -97,14 +125,11 @@ export class AdministrationPage {
         console.log(`Found ${nameNation} on page ${i + 1}`);
         return true; // Exit the loop if found
       } else if (i < lengthPage - 1) {
-        await this.pagination
-          .getByRole("button", { name: String(i + 2) })
-          .click();
+        await this.pagination.getByRole("button", { name: String(i + 2) }).click();
       }
     }
-    console.log('nation is not found')
+    console.log("nation is not found");
     return false;
-     // If not found after checking all pages
+    // If not found after checking all pages
   }
-
 }

@@ -1,6 +1,6 @@
 // import { test, expect, Page } from '@playwright/test';
 // test('has title', async ({ page }) => {
-//     await page.goto('https://omniaqapreprod.omniatestcloud.net/');
+
 
 //     // Fill login form
 //     await page.getByRole("textbox", { name: "Username" }).fill('ominatesting');

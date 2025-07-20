@@ -5,9 +5,10 @@ import { randomName } from "../utils/helper";
 import { LoginPage } from "../pages/LoginPage";
 import { loginAndStorageState } from "../storagstate";
 
-test.use({ storageState: async ({}, use) => use(await loginAndStorageState()) });
+
 //test.use({ storageState: ".auth/user.json" })
 test.describe("Create Nationality Tests", () => {
+  test.use({ storageState: async ({}, use) => use(await loginAndStorageState()) });
   //  test.beforeAll(async ({ loginPage, administrationPage }) => {
   //    await loginPage.navigateToLoginPage();
   //    await loginPage.login("Admin", "admin123");

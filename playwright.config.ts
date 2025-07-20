@@ -17,7 +17,7 @@ dotenv.config({ path: path.resolve(__dirname, '.env') });
 
 export default defineConfig({
   
-  
+  timeout:120000,
   expect: {
     timeout: Timeout.DEFAULT, // 10 seconds
   },
@@ -47,53 +47,17 @@ export default defineConfig({
 
   /* Configure projects for major browsers */
   projects: [
-    { name: 'setup', 
+    
+    { name: 'setup',
       testMatch: /.*\.setup\.ts/
     },
+    
     {
       name: 'chromium',
-      use: { ...devices['Desktop Chrome'],
-      headless: false
-       // storageState: './.auth/user.json'
-       },
+      testDir: './tests',
+      //use:{headless: true,}
      // dependencies: ['setup'], // This ensures the 'setup' project runs before 'chromium'
     },
-
-    {
-      // name: 'firefox',
-      // use: { ...devices['Desktop Firefox'],
-      //   //storageState: './.auth/user.json', // Use the authenticated state from the setup
-      //  },
-      //dependencies: ['setup'],
-    },
-
-    {
-      // name: 'webkit',
-      // use: { ...devices['Desktop Safari'] ,
-      //  // storageState: './.auth/user.json'
-      // },
-      //dependencies: ['setup'],
-    },
-
-    /* Test against mobile viewports. */
-    // {
-    //   name: 'Mobile Chrome',
-    //   use: { ...devices['Pixel 5'] },
-    // },
-    // {
-    //   name: 'Mobile Safari',
-    //   use: { ...devices['iPhone 12'] },
-    // },
-
-    /* Test against branded browsers. */
-    // {
-    //   name: 'Microsoft Edge',
-    //   use: { ...devices['Desktop Edge'], channel: 'msedge' },
-    // },
-    // {
-    //   name: 'Google Chrome',
-    //   use: { ...devices['Desktop Chrome'], channel: 'chrome' },
-    // },
   ],
  
   /* Run your local dev server before starting the tests */
